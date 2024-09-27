@@ -7,4 +7,4 @@ Vytvoření redakčního systému po vzoru VŠPJ LOGOS POLYTECHNIKOS [zadání](
 PHP, HTML, CSS, MySQL, JS
 
 ## Členové
-Alexandr Merunka, Martin Kostka, Petr Hošek, Filip Pačíska
+Alexandr Merunka, Martin Kostka, Petr Hošek, Filip Pačíska, Michal David
