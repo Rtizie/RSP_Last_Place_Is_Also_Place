@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # Symfony
+  symfony:
+    image: php:8.2-fpm
+    container_name: symfony_app
+    restart: always
+    working_dir: /var/www/html
+    volumes:
+      - ./app:/var/www/html
+    ports:
+      - "8000:8000"
+    networks:
+      - symfony_network
+    depends_on:
+      - mysql
+    environment:
+      DATABASE_URL: "mysql://symfony_user:symfony_password@mysql:3306/symfony_db"
+   # Nginx (pro obsluhu Symfony přes web)
+  nginx:
+    image: nginx:alpine
+    container_name: symfony_nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - symfony_network
+    depends_on:
+      - symfony
+
+  # MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: symfony_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: symfony_db
+      MYSQL_USER: symfony_user
+      MYSQL_PASSWORD: symfony_password
+    volumes:
+      - ./database:/var/lib/mysql
+    networks:
+      - symfony_network
+
+networks:
+  symfony_network:
+    driver: bridge
+
+
