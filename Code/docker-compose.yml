@@ -36,6 +36,8 @@ services:
   mysql:
     image: mysql:8.0
     container_name: symfony_mysql
+    ports:
+      - "3306:3306"
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root_password
