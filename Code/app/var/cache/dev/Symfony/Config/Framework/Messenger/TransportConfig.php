@@ -77,7 +77,7 @@ class TransportConfig
     /**
      * @template TValue
      * @param TValue $value
-     * @default {"service":null,"max_retries":3,"delay":1000,"multiplier":2,"max_delay":0,"jitter":0.10000000000000001}
+     * @default {"service":null,"max_retries":3,"delay":1000,"multiplier":2,"max_delay":0,"jitter":0.1}
      * @return \Symfony\Config\Framework\Messenger\TransportConfig\RetryStrategyConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Framework\Messenger\TransportConfig\RetryStrategyConfig : static)
      */
