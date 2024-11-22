@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registrace{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-center align-items-start" style="min-height: calc(100vh - 56px); padding-top: 40px;">
+    <div class="card shadow-lg" style="width: 100%; max-width: 400px;">
+        <div class="card-body">
+            <h2 class="text-center mb-4">Registrace</h2>
+            {{ form_start(registrationForm) }}
+            
+            <div class="form-group mb-3">
+                <label for="username">Uživatelské jméno</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    {{ form_widget(registrationForm.username, { 'attr': {'class': 'form-control', 'placeholder': 'Zadejte uživatelské jméno'} }) }}
+                </div>
+                {{ form_errors(registrationForm.username) }}
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="plainPassword">Heslo</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    {{ form_widget(registrationForm.plainPassword, { 'attr': {'class': 'form-control', 'placeholder': 'Zadejte heslo'} }) }}
+                </div>
+                {{ form_errors(registrationForm.plainPassword) }}
+            </div>
+
+            <div class="form-group mb-3">
+                <div class="form-check">
+                    {{ form_widget(registrationForm.agreeTerms, { 'attr': {'class': 'form-check-input'} }) }}
+                    <label class="form-check-label" for="agreeTerms">Souhlasím s podmínkami</label>
+                </div>
+                {{ form_errors(registrationForm.agreeTerms) }}
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Registrovat</button>
+            {{ form_end(registrationForm) }}
+
+            <div class="text-center mt-3">
+                <a href="{{ path('app_login') }}">Jste již zaregistrován? Přihlaste se!</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
