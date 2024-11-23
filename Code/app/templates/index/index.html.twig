@@ -4,11 +4,10 @@
 
 {% block body %}
     <main>
-        <h1>Vítejte na hlavní stránce</h1>
-        {% if app.user %}
-            <p>Jste přihlášen jako: {{ app.user.username }}</p>
-        {% else %}
-            <p>Nejste přihlášen.</p>
-        {% endif %}
+        <div class="banner-container">
+            <img src="{{ asset('images/banner.png') }}" alt="Banner">
+        </div>
+
+
     </main>
 {% endblock %}
