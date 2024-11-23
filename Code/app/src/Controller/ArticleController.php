@@ -10,28 +10,33 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Doctrine\ORM\EntityManagerInterface;  // Přidání správného importu pro EntityManager
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class ArticleController extends AbstractController
 {
     private $entityManager;
 
-    // Přidání EntityManagerInterface do konstruktoru
     public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->entityManager = $entityManager; // Přiřazení EntityManageru do proměnné
+        $this->entityManager = $entityManager;
     }
 
-    // Route pro přidání článku
-    #[Route('/add-article', name: 'apadd_article')]
+    // Přidání článku (povolení pro autory i adminy)
+    #[Route('/add-article', name: 'add-article')]
     public function addArticle(Request $request): Response
     {
+        // Povolení přidávání článků pro ROLE_AUTHOR a ROLE_ADMIN
+        if (!$this->isGranted('ROLE_AUTHOR') && !$this->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException('Nemáte oprávnění přidávat články.');
+        }
+
         $article = new Article();
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Zpracování obrázku
+            // Zpracování obrázku, pokud byl nahrán
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
                 $newFilename = uniqid().'.'.$imageFile->guessExtension();
@@ -42,14 +47,12 @@ class ArticleController extends AbstractController
                 $article->setImage($newFilename);
             }
 
-            // Nastavení autora jako aktuálně přihlášeného uživatele
+            // Nastavení autora článku
             $article->setAuthor($this->getUser()->getUsername());
 
-            // Použití injektovaného EntityManageru pro uložení článku
             $this->entityManager->persist($article);
             $this->entityManager->flush();
 
-            // Po úspěšném přidání přesměruj na seznam článků
             return $this->redirectToRoute('article_list');
         }
 
@@ -58,7 +61,7 @@ class ArticleController extends AbstractController
         ]);
     }
 
-    // Route pro zobrazení seznamu článků
+    // Seznam všech článků (dostupné pro všechny)
     #[Route('/article-list', name: 'article_list')]
     public function articleList(ArticleRepository $articleRepository): Response
     {
@@ -68,7 +71,7 @@ class ArticleController extends AbstractController
         ]);
     }
 
-    // Route pro zobrazení detailu článku
+    // Detail článku (dostupné pro všechny)
     #[Route('/article/{id}', name: 'article_detail')]
     public function articleDetail(int $id, ArticleRepository $articleRepository): Response
     {
@@ -81,5 +84,26 @@ class ArticleController extends AbstractController
         return $this->render('article/detail.html.twig', [
             'article' => $article,
         ]);
+    }
+
+    // Mazání článku (pouze pro adminy)
+    #[Route('/article/{id}/delete', name: 'article_delete')]
+    public function deleteArticle(int $id, ArticleRepository $articleRepository): Response
+    {
+        // Povolení mazání pouze pro adminy
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException('Nemáte oprávnění mazat články.');
+        }
+
+        $article = $articleRepository->find($id);
+
+        if (!$article) {
+            throw $this->createNotFoundException('Článek nenalezen.');
+        }
+
+        $this->entityManager->remove($article);
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute('article_list');
     }
 }
