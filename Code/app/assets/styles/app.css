@@ -1,30 +1,30 @@
 /* Cílíme pouze na odkazy v navigačním menu */
 nav ul li a {
-    color: #000; /* Černá barva textu */
-    text-decoration: none; /* Odstranění standardního podtržení */
-    position: relative; /* Potřebné pro pseudoelement */
-    transition: color 0.3s ease; /* Plynulá změna barvy */
+    color: #000;
+    text-decoration: none;
+    position: relative; 
+    transition: color 0.3s ease;
 }
 
 /* Vytvoření efektu pomocí ::after pro odkazy v navigaci */
 nav ul li a::after {
-    content: ""; /* Pseudoelement je prázdný */
+    content: "";
     position: absolute;
     left: 0;
     right: 0;
-    bottom: -4px; /* Vzdálenost od textu */
-    height: 2px; /* Výška čáry */
-    background-color: #007bff; /* Modrá čára */
-    transform: scaleX(0); /* Výchozí stav - čára neviditelná */
-    transition: transform 0.3s ease; /* Plynulý efekt zobrazení čáry */
-    transform-origin: center; /* Animace začíná uprostřed */
+    bottom: -4px; 
+    height: 2px;
+    background-color: #007bff;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+    transform-origin: center;
 }
 
 /* Hover efekt pro odkazy v navigaci */
 nav ul li a:hover {
-    color: #007bff; /* Změna barvy textu při hoveru */
+    color: #007bff; 
 }
 
 nav ul li a:hover::after {
-    transform: scaleX(1); /* Čára se zobrazí */
+    transform: scaleX(1); 
 }

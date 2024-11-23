@@ -1,0 +1,28 @@
+{# templates/article/list.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Seznam článků{% endblock %}
+
+{% block body %}
+    <h1>Seznam článků</h1>
+
+    <div class="container">
+        <div class="row">
+            {% for article in articles %}
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="{{ asset('uploads/images/' ~ article.image) }}" class="card-img-top" alt="{{ article.title }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ article.title }}</h5>
+                            <p class="card-text">{{ article.content|slice(0, 100) ~ '...' }}</p>
+                            <p class="card-text"><small class="text-muted">Autor: {{ article.author }}</small></p>
+                            <p class="card-text"><small class="text-muted">Přidáno: {{ article.createdAt|date('d.m.Y') }}</small></p>
+                            <a href="{{ path('article_detail', {'id': article.id}) }}" class="btn btn-primary">Zobrazit článek</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

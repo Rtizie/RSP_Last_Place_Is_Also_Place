@@ -12,7 +12,6 @@ class IndexController extends AbstractController
     #[Route('/', name: 'app_index')]
     public function index(Security $security): Response
     {
-        // Získání přihlášeného uživatele
         $user = $security->getUser();
 
         return $this->render('index/index.html.twig', [
