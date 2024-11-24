@@ -11,20 +11,26 @@
 
     <div class="row">
         {% for article in articles %}
-            <div class="col-md-4">
-                <div class="card">
+            <div class="col-md-12 mb-3">
+                <div class="card d-flex flex-row">
                     {% if article.image %}
-                        <img src="{{ asset('uploads/images/' ~ article.image) }}" alt="{{ article.title }}" class="card-img-top">
+                        <div class="col-md-3 d-flex align-items-stretch">
+                            <img src="{{ asset('uploads/images/' ~ article.image) }}" alt="{{ article.title }}" class="card-img-left" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
                     {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ article.title }}</h5>
-                        <p class="card-text">{{ article.content|slice(0, 100) ~ '...' }}</p>
-                        <p class="card-text"><small class="text-muted">Autor: {{ article.author }}</small></p>
-                        <p class="card-text"><small class="text-muted">Přidáno: {{ article.createdAt|date('d.m.Y') }}</small></p>
-                        <a href="{{ path('article_detail', {'id': article.id}) }}" class="btn btn-primary">Zobrazit článek</a>
-                        {% if is_granted('ROLE_ADMIN') %}
-                            <a href="{{ path('article_delete', {'id': article.id}) }}" class="btn btn-danger" onclick="return confirm('Opravdu chcete tento článek smazat?')">Smazat</a>
-                        {% endif %}
+                    <div class="col-md-9 d-flex flex-column">
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <h5 class="card-title">{{ article.title }}</h5>
+                            <p class="card-text">{{ article.content|slice(0, 100) ~ '...' }}</p>
+                            <p class="card-text"><small class="text-muted">Autor: {{ article.author }}</small></p>
+                            <p class="card-text"><small class="text-muted">Přidáno: {{ article.createdAt|date('d.m.Y') }}</small></p>
+                        </div>
+                        <div class="d-flex justify-content-start align-items-center mt-2 px-3" style="padding-bottom: 10px; padding-right: 10px;">
+                            <a href="{{ path('article_detail', {'id': article.id}) }}" class="btn btn-primary btn-sm" style="margin-right: 10px;">Zobrazit článek</a>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('article_delete', {'id': article.id}) }}" class="btn btn-danger btn-sm" onclick="return confirm('Opravdu chcete tento článek smazat?')">Smazat</a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>

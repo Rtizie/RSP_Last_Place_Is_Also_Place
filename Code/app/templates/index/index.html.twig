@@ -3,59 +3,6 @@
 {% block title %}Index{% endblock %}
 
 {% block body %}
-    <style>
-    .latest-article {
-    margin-top: 20px;
-}
-
-.article-main {
-    display: flex;
-    margin-bottom: 30px;
-}
-
-.article-image {
-    width: 300px;
-    height: auto;
-    margin-right: 20px;
-}
-
-.article-info {
-    flex: 1;
-}
-
-.recent-articles {
-    margin-top: 40px;
-}
-
-.article-item {
-    display: flex;
-    margin-bottom: 20px;
-}
-
-.article-thumbnail {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    margin-right: 20px;
-}
-
-.article-summary {
-    flex: 1;
-}
-
-h3 {
-    margin-bottom: 20px;
-}
-
-h4 {
-    margin-bottom: 10px;
-}
-
-a {
-    color: #007bff;
-    text-decoration: none;
-}
-</style>
     <main>
         <div class="banner-container">
             <img src="{{ asset('img/banner.png') }}" alt="Banner">
