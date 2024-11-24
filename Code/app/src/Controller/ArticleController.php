@@ -71,7 +71,7 @@ class ArticleController extends AbstractController
         ]);
     }
 
-    // Detail článku (dostupné pro všechny)
+        // Detail článku (dostupné pro všechny)
     #[Route('/article/{id}', name: 'article_detail')]
     public function articleDetail(int $id, ArticleRepository $articleRepository): Response
     {
@@ -85,6 +85,7 @@ class ArticleController extends AbstractController
             'article' => $article,
         ]);
     }
+
 
     // Mazání článku (pouze pro adminy)
     #[Route('/article/{id}/delete', name: 'article_delete')]
