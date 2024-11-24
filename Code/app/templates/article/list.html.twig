@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Seznam článků{% endblock %}
+
+{% block body %}
+    <h1>Seznam článků</h1>
+
+    {% if is_granted('ROLE_AUTHOR') or is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('add-article') }}" class="btn btn-success mb-3">Přidat článek</a>
+    {% endif %}
+
+    <div class="row">
+        {% for article in articles %}
+            <div class="col-md-4">
+                <div class="card">
+                    {% if article.image %}
+                        <img src="{{ asset('uploads/images/' ~ article.image) }}" alt="{{ article.title }}" class="card-img-top">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ article.title }}</h5>
+                        <p class="card-text">{{ article.content|slice(0, 100) ~ '...' }}</p>
+                        <p class="card-text"><small class="text-muted">Autor: {{ article.author }}</small></p>
+                        <p class="card-text"><small class="text-muted">Přidáno: {{ article.createdAt|date('d.m.Y') }}</small></p>
+                        <a href="{{ path('article_detail', {'id': article.id}) }}" class="btn btn-primary">Zobrazit článek</a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('article_delete', {'id': article.id}) }}" class="btn btn-danger" onclick="return confirm('Opravdu chcete tento článek smazat?')">Smazat</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

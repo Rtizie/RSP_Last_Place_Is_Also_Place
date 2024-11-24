@@ -1,0 +1,30 @@
+/* Cílíme pouze na odkazy v navigačním menu */
+nav ul li a {
+    color: #000;
+    text-decoration: none;
+    position: relative; 
+    transition: color 0.3s ease;
+}
+
+/* Vytvoření efektu pomocí ::after pro odkazy v navigaci */
+nav ul li a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -4px; 
+    height: 2px;
+    background-color: #007bff;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+    transform-origin: center;
+}
+
+/* Hover efekt pro odkazy v navigaci */
+nav ul li a:hover {
+    color: #007bff; 
+}
+
+nav ul li a:hover::after {
+    transform: scaleX(1); 
+}

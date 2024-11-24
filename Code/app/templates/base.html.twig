@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Vaše aplikace{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+    {% block header %}
+    <header class="relative">
+        <!-- Header s bílým pozadím -->
+        <div class="bg-white px-4 py-3">
+            <div class="container d-flex align-items-center justify-content-between">
+                <nav>
+                    <ul class="d-flex align-items-center gap-3 list-unstyled mb-0">
+                        <li>
+                            <a href="{{ path('app_index') }}" class="text-dark text-decoration-none text-sm">Domů</a>
+                        </li>
+                        <li>
+                            <a href="" class="text-dark text-decoration-none text-sm">Články</a>
+                        </li>
+                        <li>
+                            <a href="" class="text-dark text-decoration-none text-sm">Autoři</a>
+                        </li>
+                        <li>
+                            <a href="" class="text-dark text-decoration-none text-sm">Recenzenti</a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Vyhledávání přesunuté na střed a zvětšené -->
+                <div class="d-flex align-items-center gap-2 mx-auto">
+                    <div class="input-group w-100"> <!-- Zvětšení na 100% šířky -->
+                        <input type="search" class="form-control" placeholder="Vyhledat...">
+                        <span class="input-group-text bg-white border-start-0 border-end-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85a1.007 1.007 0 0 0-.115-.098zm-5.442-8.344a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11z"/>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Přihlásit/Odhlásit -->
+                <div class="ms-auto text-end">
+                    {% if app.user %}
+                        <a href="{{ path('app_logout') }}" class="btn btn-danger text-white d-flex align-items-center gap-2">
+                            <span>
+                                <strong>{{ app.user.username }}</strong>, odhlásit se
+                            </span>
+                            <i class="fas fa-sign-out-alt"></i>
+                        </a>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn btn-light text-dark">Přihlásit se</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Upozornění s odsazením a barvou pozadí -->
+        <div class="bg-primary text-white mt-3 px-4 py-2">
+            <div class="container text-center">
+                <p class="mb-0 text-sm">
+                    Tato aplikace je výsledkem školního projektu v kurzu Řešení SW projektů na Vysoké škole polytechnické Jihlava. Nejedná se o stránky skutečného odborného časopisu!
+                </p>
+            </div>
+        </div>
+    </header>
+    {% endblock %}
+
+    <main class="container my-5">
+        {% block body %}{% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    {% block javascripts %}{% endblock %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+</body>
+</html>
