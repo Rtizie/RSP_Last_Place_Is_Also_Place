@@ -1,4 +1,7 @@
-/* Cílíme pouze na odkazy v navigačním menu */
+body{
+    font-family: 'Arial', sans-serif;
+}
+
 nav ul li a {
     color: #000;
     text-decoration: none;
@@ -6,7 +9,6 @@ nav ul li a {
     transition: color 0.3s ease;
 }
 
-/* Vytvoření efektu pomocí ::after pro odkazy v navigaci */
 nav ul li a::after {
     content: "";
     position: absolute;
@@ -20,7 +22,6 @@ nav ul li a::after {
     transform-origin: center;
 }
 
-/* Hover efekt pro odkazy v navigaci */
 nav ul li a:hover {
     color: #007bff; 
 }

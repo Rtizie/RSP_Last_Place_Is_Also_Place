@@ -4,7 +4,6 @@
 namespace App\Controller;
 
 use App\Entity\Article;
-use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,7 +25,6 @@ class ArticleController extends AbstractController
     #[Route('/add-article', name: 'add-article')]
     public function addArticle(Request $request): Response
     {
-        // Povolení přidávání článků pro ROLE_AUTHOR a ROLE_ADMIN
         if (!$this->isGranted('ROLE_AUTHOR') && !$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Nemáte oprávnění přidávat články.');
         }
@@ -36,10 +34,9 @@ class ArticleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Zpracování obrázku, pokud byl nahrán
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
-                $newFilename = uniqid().'.'.$imageFile->guessExtension();
+                $newFilename = uniqid() . '.' . $imageFile->guessExtension();
                 $imageFile->move(
                     $this->getParameter('images_directory'),
                     $newFilename
@@ -47,7 +44,6 @@ class ArticleController extends AbstractController
                 $article->setImage($newFilename);
             }
 
-            // Nastavení autora článku
             $article->setAuthor($this->getUser()->getUsername());
 
             $this->entityManager->persist($article);
@@ -71,7 +67,7 @@ class ArticleController extends AbstractController
         ]);
     }
 
-        // Detail článku (dostupné pro všechny)
+    // Detail článku s dalšími články (dostupné pro všechny)
     #[Route('/article/{id}', name: 'article_detail')]
     public function articleDetail(int $id, ArticleRepository $articleRepository): Response
     {
@@ -81,17 +77,25 @@ class ArticleController extends AbstractController
             throw $this->createNotFoundException('Článek nenalezen.');
         }
 
+        // Načtení dalších článků (vyjma aktuálního článku)
+        $relatedArticles = $articleRepository->createQueryBuilder('a')
+            ->where('a.id != :id')
+            ->setParameter('id', $id)
+            ->orderBy('a.createdAt', 'DESC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult();
+
         return $this->render('article/detail.html.twig', [
             'article' => $article,
+            'relatedArticles' => $relatedArticles,
         ]);
     }
-
 
     // Mazání článku (pouze pro adminy)
     #[Route('/article/{id}/delete', name: 'article_delete')]
     public function deleteArticle(int $id, ArticleRepository $articleRepository): Response
     {
-        // Povolení mazání pouze pro adminy
         if (!$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Nemáte oprávnění mazat články.');
         }

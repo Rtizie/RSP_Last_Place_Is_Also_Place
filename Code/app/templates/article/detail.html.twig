@@ -2,24 +2,64 @@
 
 {% block title %}{{ article.title }}{% endblock %}
 
-{% block body %}
-    <div class="container mt-5">
-        <h1>{{ article.title }}</h1>
-        <p><strong>Autor:</strong> {{ article.author }}</p>
-        <p><strong>Datum přidání:</strong> {{ article.createdAt|date('d.m.Y') }}</p>
-        
-        <div class="my-3">
-            <!-- Nastavení maximální šířky obrázku na 600px -->
-            <img src="{{ asset('uploads/images/' ~ article.image) }}" alt="{{ article.title }}" class="img-fluid rounded" style="max-width: 600px; width: 100%; height: auto;">
-        </div>
-        
-        <p>{{ article.content }}</p>
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/detail.css') }}">
+{% endblock %}
 
-        {% if is_granted('ROLE_ADMIN') %}
-            <div class="d-flex justify-content-start mt-3">
-                <a href="{{ path('article_delete', {'id': article.id}) }}" class="btn btn-danger me-2">Smazat</a>
-                <a href="{{ path('article_list') }}" class="btn btn-secondary">Zpět na seznam článků</a>
+{% block body %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Hlavní obsah (levý sloupec) -->
+        <div class="col-lg-8">
+            <h1 class="mb-4">{{ article.title }}</h1>
+
+            <div class="meta-info mb-4">
+                <div class="icon">
+                    <i class="fas fa-user"></i>
+                    <span>Autor: {{ article.author }}</span>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Datum přidání: {{ article.createdAt|date('d.m.Y') }}</span>
+                </div>
             </div>
-        {% endif %}
+
+            <div class="my-4">
+                <!-- Stylování obrázku -->
+                <img src="{{ asset('uploads/images/' ~ article.image) }}" 
+                     alt="{{ article.title }}" 
+                     class="img-fluid rounded">
+                <p class="text-center text-muted mt-2">Popisek obrázku</p>
+            </div>
+
+            <!-- Obsah článku -->
+            <div class="article-content">
+                <p>{{ article.content }}</p>
+            </div>
+
+            <!-- Admin funkce -->
+            {% if is_granted('ROLE_ADMIN') %}
+                <div class="d-flex justify-content-start mt-4">
+                    <a href="{{ path('article_delete', {'id': article.id}) }}" class="btn btn-danger me-2">Smazat</a>
+                    <a href="{{ path('article_list') }}" class="btn btn-secondary">Zpět na seznam článků</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Pravý sloupec: Další články -->
+        <div class="col-lg-4">
+            <h5 class="mb-4">Další články</h5>
+            <div class="list-group">
+                {% for relatedArticle in relatedArticles %}
+                    <a href="{{ path('article_detail', {'id': relatedArticle.id}) }}" class="list-group-item list-group-item-action">
+                        <h6 class="mb-1">{{ relatedArticle.title }}</h6>
+                        <p class="mb-0 text-muted small">{{ relatedArticle.createdAt|date('d.m.Y') }}</p>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
     </div>
+</div>
+
 {% endblock %}
