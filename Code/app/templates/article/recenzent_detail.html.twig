@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/detail.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <h1 class="mb-4">{{ article.title }}</h1>
+
+            <div class="meta-info mb-4">
+                <div class="icon">
+                    <i class="fas fa-user"></i>
+                    <span>Autor: {{ article.author }}</span>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Datum přidání: {{ article.createdAt|date('d.m.Y') }}</span>
+                </div>
+            </div>
+
+            <div class="my-4">
+                <img src="{{ asset('uploads/images/' ~ article.image) }}" 
+                     alt="{{ article.title }}" 
+                     class="img-fluid rounded">
+                <p class="text-center text-muted mt-2">Popisek obrázku</p>
+            </div>
+
+            <div class="article-content">
+                <p>{{ article.content }}</p>
+            </div>
+
+            {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_REVIEWER') %}
+                {% if article.status == 'offered' %}
+                    <div class="d-flex justify-content-start mt-4">
+                        <form action="{{ path('article_review', {'id': article.id}) }}" method="POST">
+                            <button type="submit" name="action" value="approve" class="btn btn-success me-2" onclick="return confirm('Stejně jste si jistý, že chcete potvrdit? Článek bude veřejně publikován.')">Potvrdit</button>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">Zamítnout</button>
+                            <a href="{{ path('offered_articles') }}" class="btn btn-secondary">Zpět na seznam článků</a>
+                        </form>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="rejectModalLabel">Zamítnutí článku</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="{{ path('reject_article', {id: article.id}) }}">
+          <div class="mb-3">
+            <label for="reason" class="form-label">Důvod zamítnutí</label>
+            <textarea class="form-control" id="reason" name="reason" rows="4" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-danger">Zamítnout</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

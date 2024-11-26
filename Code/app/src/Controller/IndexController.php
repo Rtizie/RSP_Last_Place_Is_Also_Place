@@ -15,11 +15,11 @@ class IndexController extends AbstractController
     {
         $user = $security->getUser();
 
-        // Získání nejnovějšího článku
-        $latestArticle = $articleRepository->findOneBy([], ['createdAt' => 'DESC']);
+        // Získání nejnovějšího schváleného článku
+        $latestArticle = $articleRepository->findOneBy(['status' => 'approved'], ['createdAt' => 'DESC']);
 
-        // Získání dalších tří článků
-        $recentArticles = $articleRepository->findBy([], ['createdAt' => 'DESC'], 3, 1);
+        // Získání dalších tří schválených článků
+        $recentArticles = $articleRepository->findBy(['status' => 'approved'], ['createdAt' => 'DESC'], 3, 1);
 
         return $this->render('index/index.html.twig', [
             'user' => $user,

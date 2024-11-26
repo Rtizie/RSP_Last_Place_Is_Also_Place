@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SND - Schvalování článků{% endblock %}
+
+
+{% block body %}
+    <div class="container mt-4">
+        <h2>Seznam článků</h2>
+        <ul class="list-group">
+            {% for article in articles %}
+                <li class="list-group-item d-flex flex-column mb-3">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-newspaper me-2"></i>
+                        <span>{{ article.title }}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-calendar-alt me-2"></i> {{ article.createdAt|date('d.m.Y') }}
+                        </div>
+                        <div>
+                            {% if article.status == 'approved' %}
+                                <strong class="text-success">
+                                    <i class="fas fa-check-circle"></i> {{ article.status }}
+                                </strong>
+                            {% elseif article.status == 'offered' %}
+                                <strong class="text-warning">
+                                    <i class="fas fa-hourglass-start"></i> {{ article.status }}
+                                </strong>
+                            {% elseif article.status == 'rejected' %}
+                                <strong class="text-danger">
+                                    <i class="fas fa-times-circle"></i> {{ article.status }}
+                                </strong>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if article.status == 'rejected' %}
+                        <div class="d-flex justify-content-between mt-2">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-exclamation-triangle me-2"></i> 
+                                <strong>Důvod zamítnutí:</strong>
+                            </div>
+                            <div class="text-muted ms-3">
+                                {% if article.rejectionReason is empty %}
+                                    Nebyl udán.
+                                {% else %}
+                                    {{ article.rejectionReason }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
