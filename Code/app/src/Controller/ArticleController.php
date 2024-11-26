@@ -154,12 +154,13 @@ class ArticleController extends AbstractController
     #[Route('/article-list', name: 'article_list')]
     public function articleList(ArticleRepository $articleRepository): Response
     {
-        $articles = $articleRepository->findAll();
+        $approvedArticles = $articleRepository->findBy(['status' => 'approved']);
+    
         return $this->render('article/list.html.twig', [
-            'articles' => $articles,
+            'articles' => $approvedArticles,
         ]);
     }
-
+    
     /*
     * REVIEWER or ADMIN can approve an article.
     */
