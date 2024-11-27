@@ -18,17 +18,17 @@ class ArticleType extends AbstractType
             // Titulek je první pole formuláře
             ->add('title', TextType::class, [
                 'label' => 'Titulek',
-                'label_attr' => ['class' => 'form-label'],  // Bootstrap třída pro label
+                'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control']
             ])
             ->add('content', TextareaType::class, [
                 'label' => 'Popis článku',
-                'label_attr' => ['class' => 'form-label'],  // Bootstrap třída pro label
+                'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'form-control', 'rows' => 5]
             ])
             ->add('category', ChoiceType::class, [
                 'label' => 'Kategorie článku',
-                'label_attr' => ['class' => 'form-label'],  // Bootstrap třída pro label
+                'label_attr' => ['class' => 'form-label'],
                 'choices' => [
                     'Novinky' => 'news',
                     'Technologie' => 'tech',
@@ -41,7 +41,7 @@ class ArticleType extends AbstractType
                 'required' => false,
                 'mapped' => false,
                 'label' => 'Nahrát obrázek',
-                'label_attr' => ['class' => 'form-label'],  // Bootstrap třída pro label
+                'label_attr' => ['class' => 'form-label'],
                 'attr' => [
                     'class' => 'form-control-file'
                 ],

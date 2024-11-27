@@ -2,32 +2,56 @@
 
 {% block title %}Seznam článků{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/article-list.css') }}">
+{% endblock %}
+
 {% block body %}
-    <h1>Seznam článků</h1>
+<div class="custom-container mt-4">
+    <h1 class="mb-4">Seznam článků</h1>
 
     {% if is_granted('ROLE_AUTHOR') or is_granted('ROLE_ADMIN') %}
-        <a href="{{ path('add-article') }}" class="btn btn-success mb-3">Přidat článek</a>
+        <a href="{{ path('add-article') }}" class="btn btn-success mb-3">
+            <i class="fas fa-plus me-1"></i>Přidat článek
+        </a>
     {% endif %}
 
     <div class="row">
         {% for article in articles %}
-            <div class="col-md-4">
-                <div class="card">
+            <div class="col-md-12 mb-4">
+                <div class="news-card shadow-sm border-light rounded">
                     {% if article.image %}
-                        <img src="{{ asset('uploads/images/' ~ article.image) }}" alt="{{ article.title }}" class="card-img-top">
+                        <div class="news-card-img">
+                            <img src="{{ asset('uploads/images/' ~ article.image) }}" alt="{{ article.title }}" class="card-img-top">
+                        </div>
                     {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ article.title }}</h5>
-                        <p class="card-text">{{ article.content|slice(0, 100) ~ '...' }}</p>
-                        <p class="card-text"><small class="text-muted">Autor: {{ article.author }}</small></p>
-                        <p class="card-text"><small class="text-muted">Přidáno: {{ article.createdAt|date('d.m.Y') }}</small></p>
-                        <a href="{{ path('article_detail', {'id': article.id}) }}" class="btn btn-primary">Zobrazit článek</a>
-                        {% if is_granted('ROLE_ADMIN') %}
-                            <a href="{{ path('article_delete', {'id': article.id}) }}" class="btn btn-danger" onclick="return confirm('Opravdu chcete tento článek smazat?')">Smazat</a>
-                        {% endif %}
+                    <div class="news-card-body">
+                        <h5 class="news-card-title">{{ article.title }}</h5>
+                        <p class="news-card-description">{{ article.content|slice(0, 100) ~ '...' }}</p>
+                        <div class="news-card-footer">
+                            <small class="text-muted">
+                                <i class="fas fa-user me-1"></i>{{ article.author }}
+                            </small>
+                            <small class="text-muted ms-3">
+                                <i class="fas fa-calendar-alt me-1"></i>{{ article.createdAt|date('d.m.Y') }}
+                            </small>
+                        </div>
+                        <div class="d-flex justify-content-start align-items-center mt-2">
+                            <a href="{{ path('article_detail', {'id': article.id}) }}" class="btn btn-primary btn-sm me-3">
+                                <i class="fas fa-eye me-1"></i>Zobrazit článek
+                            </a>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('article_delete', {'id': article.id}) }}" class="btn btn-danger btn-sm" onclick="return confirm('Opravdu chcete tento článek smazat?')">
+                                    <i class="fas fa-trash-alt me-1"></i>Smazat
+                                </a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
         {% endfor %}
     </div>
+</div>
+
 {% endblock %}

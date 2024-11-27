@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Index{% endblock %}
+{% block title %}Zprávy SDN{% endblock %}
 
 {% block body %}
     <main>
@@ -8,6 +8,43 @@
             <img src="{{ asset('img/banner.png') }}" alt="Banner">
         </div>
 
+        <section class="latest-article">
+            {% if latestArticle %}
+                <div class="article-main">
+                    <img src="{{ asset('uploads/images/' ~ latestArticle.image) }}" alt="Miniatura" class="article-image">
+                    <div class="article-info">
+                        <h2>{{ latestArticle.title }}</h2>
+                        <p><strong>{{ latestArticle.author }}</strong> | {{ latestArticle.createdAt|date('d.m.Y H:i') }}</p>
+                        <p>{{ latestArticle.content|slice(0, 150) }}...</p>
+                        <a href="{{ path('article_detail', {'id': latestArticle.id}) }}" class="read-more">
+                            <i class="fas fa-arrow-right"></i> Číst více
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </section>
 
+        <section class="recent-articles">
+            <h3 class="section-title"><i class="fas fa-newspaper"></i> Další články</h3>
+            <div class="articles-list">
+                {% for article in recentArticles %}
+                    <div class="article-item">
+                        <div class="article-thumbnail-container">
+                            <img src="{{ asset('uploads/images/' ~ article.image) }}" alt="Miniatura" class="article-thumbnail">
+                        </div>
+                        <div class="article-summary">
+                            <h4 class="article-title">{{ article.title }}</h4>
+                            <p class="article-meta">
+                                <i class="fas fa-calendar-alt"></i> {{ article.createdAt|date('d.m.Y') }}
+                            </p>
+                            <p class="article-excerpt">{{ article.content|slice(0, 100) }}...</p>
+                            <a href="{{ path('article_detail', {'id': article.id}) }}" class="read-more">
+                                <i class="fas fa-arrow-right"></i> Číst více
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
     </main>
 {% endblock %}

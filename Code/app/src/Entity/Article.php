@@ -30,17 +30,21 @@ class Article
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $createdAt = null;
 
-    // Přidání vlastnosti pro autora
     #[ORM\Column(length: 255)]
     private ?string $author = null;
 
+    #[ORM\Column(length: 50, options: ['default' => 'offered'])]
+    private ?string $status = 'offered';
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $rejectionReason = null;
+
+
     public function __construct()
     {
-        // Automaticky nastaví datum vytvoření při vytvoření instance článku
         $this->createdAt = new \DateTime();
     }
 
-    // Gettery a settery pro jednotlivé vlastnosti
     public function getId(): ?int
     {
         return $this->id;
@@ -106,7 +110,6 @@ class Article
         return $this;
     }
 
-    // Getter a setter pro author
     public function getAuthor(): ?string
     {
         return $this->author;
@@ -116,6 +119,29 @@ class Article
     {
         $this->author = $author;
 
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getRejectionReason(): ?string
+    {
+        return $this->rejectionReason;
+    }
+
+    public function setRejectionReason(?string $rejectionReason): self
+    {
+        $this->rejectionReason = $rejectionReason;
         return $this;
     }
 }
