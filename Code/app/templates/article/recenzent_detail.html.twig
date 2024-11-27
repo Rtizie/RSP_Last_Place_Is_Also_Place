@@ -36,7 +36,7 @@
             </div>
 
             {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_REVIEWER') %}
-                {% if article.status == 'offered' %}
+              {% if article.status == 'offered' or article.status == 'Article was rewrited and offered' %}
                     <div class="d-flex justify-content-start mt-4">
                         <form action="{{ path('article_review', {'id': article.id}) }}" method="POST">
                             <button type="submit" name="action" value="approve" class="btn btn-success me-2" onclick="return confirm('Stejně jste si jistý, že chcete potvrdit? Článek bude veřejně publikován.')">Potvrdit</button>

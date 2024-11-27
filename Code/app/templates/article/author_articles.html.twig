@@ -2,13 +2,13 @@
 
 {% block title %}SND - Schvalování článků{% endblock %}
 
-
 {% block body %}
     <div class="container mt-4">
-        <h2>Seznam článků</h2>
+        <h2>Seznam vašich článků</h2>
         <ul class="list-group">
             {% for article in articles %}
                 <li class="list-group-item d-flex flex-column mb-3">
+                    <!-- Article Content -->
                     <div class="d-flex align-items-center">
                         <i class="fas fa-newspaper me-2"></i>
                         <span>{{ article.title }}</span>
@@ -31,6 +31,10 @@
                                 <strong class="text-danger">
                                     <i class="fas fa-times-circle"></i> {{ article.status }}
                                 </strong>
+                            {% elseif article.status == 'Article was rewrited and offered' %}
+                                <strong class="text-warning">
+                                    <i class="fas fa-pencil-alt"></i> {{ article.status }}
+                                </strong>
                             {% endif %}
                         </div>
                     </div>
@@ -51,7 +55,16 @@
                         </div>
                     {% endif %}
                 </li>
+
+                {% if article.status == 'rejected' %}
+                    <div class="text-end">
+                        <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i> Přepracovat článek
+                        </a>
+                    </div>
+                {% endif %}
             {% endfor %}
         </ul>
     </div>
 {% endblock %}
+    

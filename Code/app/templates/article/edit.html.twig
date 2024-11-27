@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SND - Upravit článek{% endblock %}
+
+{% block body %}
+    {% if is_granted('ROLE_AUTHOR') or is_granted('ROLE_ADMIN') %}
+        <div class="container mt-5">
+            <h1>Upravit článek: {{ article.title }}</h1>
+
+            {{ form_start(form) }}
+            
+            <!-- Titulek -->
+            <div class="mb-3">
+                {{ form_label(form.title) }}
+                {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+            </div>
+
+            <!-- Obsah -->
+            <div class="mb-3">
+                {{ form_label(form.content) }}
+                {{ form_widget(form.content, {'attr': {'class': 'form-control', 'rows': '5'}}) }}
+            </div>
+
+            <!-- Kategorie -->
+            <div class="mb-3">
+                {{ form_label(form.category) }}
+                {{ form_widget(form.category, {'attr': {'class': 'form-select'}}) }}
+            </div>
+
+            <!-- Obrázek -->
+            <div class="mb-3">
+                {{ form_label(form.image) }}
+                {{ form_widget(form.image, {'attr': {'class': 'form-control-file'}}) }}
+            </div>
+
+            <!-- Tlačítka pro odeslání formuláře a zpět -->
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-primary" type="submit">Uložit změny</button>
+                <a href="{{ path('article_list') }}" class="btn btn-secondary">Zpět na seznam článků</a>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    {% else %}
+        <p>Nemáte dostatečná oprávnění pro úpravu článku.</p>
+    {% endif %}
+{% endblock %}

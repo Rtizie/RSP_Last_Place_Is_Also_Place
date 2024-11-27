@@ -49,7 +49,7 @@
                         <ul class="dropdown-menu" aria-labelledby="userDropdown">
                             {% if is_granted('ROLE_ADMIN') %}
                             <li><a class="dropdown-item" href="{{ path('add-article') }}">Přidat článek</a></li>
-                            <li><a class="dropdown-item" href="{{ path('offered_articles') }}">Schválené články</a></li>
+                            <li><a class="dropdown-item" href="{{ path('offered_articles') }}">Schválování článků</a></li>
                             <li><a class="dropdown-item" href="{{ path('article_list') }}">Seznam článků</a></li>
                             {% endif %}
 
@@ -81,6 +81,7 @@
         </div>
     </header>
     {% endblock %}
+    
 
     <main class="container my-5">
         {% block body %}{% endblock %}

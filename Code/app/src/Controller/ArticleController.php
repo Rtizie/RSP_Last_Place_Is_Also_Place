@@ -78,6 +78,35 @@ class ArticleController extends AbstractController
         ]);
     }
 
+#[Route('/article-edit/{id}', name: 'article_edit')]
+public function edit(Request $request, Article $article): Response
+{
+    $user = $this->getUser(); 
+
+    // Zkontrolujeme, zda je uživatel autorem článku
+    if ($user->getUsername() !== $article->getAuthor()) {
+        throw new AccessDeniedException('Nemáte oprávnění upravovat tento článek.');
+    }
+
+    $form = $this->createForm(ArticleType::class, $article);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $article->setStatus('Article was rewrited and offered');
+
+        $this->entityManager->flush(); 
+
+        return $this->redirectToRoute('article_list');
+    }
+
+    return $this->render('article/edit.html.twig', [
+        'form' => $form->createView(),
+        'article' => $article,
+        ]);
+    }
+
+
+
     /*
     * REVIEWER and ADMIN can see the list of offered articles for review.
     */
@@ -88,7 +117,10 @@ class ArticleController extends AbstractController
             throw new AccessDeniedException('Nemáte oprávnění zobrazit nabídnuté články.');
         }
 
-        $articles = $articleRepository->findBy(['status' => 'offered'], ['createdAt' => 'DESC']);
+        $articles = $articleRepository->findBy(
+            ['status' => ['offered', 'Article was rewrited and offered']], 
+            ['createdAt' => 'DESC']
+        );
 
         return $this->render('article/offered_articles.html.twig', [
             'articles' => $articles,
