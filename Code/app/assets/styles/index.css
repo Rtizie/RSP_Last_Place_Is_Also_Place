@@ -1,0 +1,46 @@
+/* Stylování pro časovou osu */
+.timeline {
+    position: relative;
+    padding-left: 10px; 
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.timeline-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #007bff;
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+}
+
+.timeline-content {
+    padding-left: 50px;
+}
+
+.timeline-line {
+    position: absolute;
+    left: 9px;
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background-color: #007bff;
+}
+
+.timeline-item:last-child .timeline-line {
+    display: none;
+}

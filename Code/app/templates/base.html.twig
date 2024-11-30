@@ -58,8 +58,8 @@
                             <li><a class="dropdown-item" href="{{ path('author_articles') }}">Moje články</a></li>
                             {% endif %}
 
-                            {% if is_granted('ROLE_REVIEWER') %}
-                            <li><a class="dropdown-item" href="{{ path('offered_articles') }}">Seznam článků k recenzování</a></li>
+                            {% if is_granted('ROLE_REDAKTOR') %}
+                            <li><a class="dropdown-item" href="{{ path('offered_articles') }}">Seznam článků k schválení</a></li>
                             {% endif %}
                             
                             <li><a class="dropdown-item" href="{{ path('app_logout') }}">Odhlásit se</a></li>

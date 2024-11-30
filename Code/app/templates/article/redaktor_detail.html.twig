@@ -35,7 +35,7 @@
                 <p>{{ article.content }}</p>
             </div>
 
-            {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_REVIEWER') %}
+            {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_REDAKTOR') %}
               {% if article.status == 'offered' or article.status == 'Article was rewrited and offered' %}
                     <div class="d-flex justify-content-start mt-4">
                         <form action="{{ path('article_review', {'id': article.id}) }}" method="POST">
