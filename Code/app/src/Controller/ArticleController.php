@@ -13,6 +13,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
+
+    /*
+    * Čtenář Může koukat pouze članky
+    * ADMIN Má maximální práva
+    * Redaktor Může schvalovat články, vrácet články přo předělaní
+    * Recenzent Může vytvářet posudky a hodnocení pro daný článek?
+    * Autor může přidátvat članky
+    */
+
+
+
 class ArticleController extends AbstractController
 {
     private $entityManager;
@@ -79,16 +90,52 @@ class ArticleController extends AbstractController
     }
 
     /*
-    * REVIEWER and ADMIN can see the list of offered articles for review.
+    * AUTHOR can edit their own articles.
+    */
+
+    #[Route('/article-edit/{id}', name: 'article_edit')]
+    public function edit(Request $request, Article $article): Response
+    {
+        $user = $this->getUser(); 
+
+        // Zkontrolujeme, zda je uživatel autorem článku
+        if ($user->getUsername() !== $article->getAuthor()) {
+            throw new AccessDeniedException('Nemáte oprávnění upravovat tento článek.');
+        }
+
+        $form = $this->createForm(ArticleType::class, $article);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $article->setStatus('Article was rewrited and offered');
+
+            $this->entityManager->flush(); 
+
+            return $this->redirectToRoute('article_list');
+        }
+
+        return $this->render('article/edit.html.twig', [
+            'form' => $form->createView(),
+            'article' => $article,
+        ]);
+    }
+
+
+
+    /*
+    * REDAKTOR and ADMIN can see the list of offered articles for review.
     */
     #[Route('/offered-articles', name: 'offered_articles')]
     public function offeredArticles(ArticleRepository $articleRepository): Response
     {
-        if (!$this->isGranted('ROLE_REVIEWER') && !$this->isGranted('ROLE_ADMIN')) {
+        if (!$this->isGranted('ROLE_REDAKTOR') && !$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Nemáte oprávnění zobrazit nabídnuté články.');
         }
 
-        $articles = $articleRepository->findBy(['status' => 'offered'], ['createdAt' => 'DESC']);
+        $articles = $articleRepository->findBy(
+            ['status' => ['offered', 'Article was rewrited and offered']], 
+            ['createdAt' => 'DESC']
+        );
 
         return $this->render('article/offered_articles.html.twig', [
             'articles' => $articles,
@@ -96,12 +143,12 @@ class ArticleController extends AbstractController
     }
 
     /*
-    * REVIEWER or ADMIN can approve or reject articles.
+    * REDAKTOR or ADMIN can approve or reject articles.
     */
     #[Route('/article/{id}/review', name: 'article_review')]
     public function reviewArticle(int $id, ArticleRepository $articleRepository, Request $request): Response
     {
-        if (!$this->isGranted('ROLE_REVIEWER') && !$this->isGranted('ROLE_ADMIN')) {
+        if (!$this->isGranted('ROLE_REDAKTOR') && !$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Nemáte oprávnění hodnotit články.');
         }
 
@@ -162,12 +209,12 @@ class ArticleController extends AbstractController
     }
     
     /*
-    * REVIEWER or ADMIN can approve an article.
+    * REDAKTOR or ADMIN can approve an article.
     */
     #[Route('/article/{id}/approve', name: 'approve_article', methods: ['GET'])]
     public function approveArticle(int $id, ArticleRepository $articleRepository): Response
     {
-        if (!$this->isGranted('ROLE_REVIEWER') && !$this->isGranted('ROLE_ADMIN')) {
+        if (!$this->isGranted('ROLE_REDAKTOR') && !$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Nemáte oprávnění schválit článek.');
         }
 
@@ -184,12 +231,12 @@ class ArticleController extends AbstractController
     }
 
     /*
-    * REVIEWER or ADMIN can reject an article with a reason.
+    * REDAKTOR or ADMIN can reject an article with a reason.
     */
     #[Route('/article/{id}/reject', name: 'reject_article', methods: ['POST'])]
     public function rejectArticle(int $id, ArticleRepository $articleRepository, Request $request): Response
     {
-        if (!$this->isGranted('ROLE_REVIEWER') && !$this->isGranted('ROLE_ADMIN')) {
+        if (!$this->isGranted('ROLE_REDAKTOR') && !$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Nemáte oprávnění odmítnout článek.');
         }
 
@@ -231,12 +278,12 @@ class ArticleController extends AbstractController
     }
 
     /*
-    * REVIEWER can view article details for review purposes.
+    * REDAKTOR can view article details for review purposes.
     */
-    #[Route('/recenzent-article/{id}', name: 'recenzent_article')]
+    #[Route('/redaktor-article/{id}', name: 'redaktor_article')]
     public function showArticle(int $id, ArticleRepository $articleRepository): Response
     {
-        if (!$this->isGranted('ROLE_REVIEWER') && !$this->isGranted('ROLE_ADMIN')) {
+        if (!$this->isGranted('ROLE_REDAKTOR') && !$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Nemáte oprávnění zobrazit tento článek pro recenzi.');
         }
 
@@ -245,7 +292,7 @@ class ArticleController extends AbstractController
         if (!$article) {
             throw $this->createNotFoundException('Článek nenalezen.');
         }
-        return $this->render('article/recenzent_detail.html.twig', [
+        return $this->render('article/redaktor_detail.html.twig', [
             'article' => $article,
         ]);
     }
