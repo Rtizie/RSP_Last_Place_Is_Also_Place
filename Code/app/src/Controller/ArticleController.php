@@ -35,18 +35,6 @@ class ArticleController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/user-actions', name: 'user_actions')]
-    public function userActions(UserActionRepository $userActionRepository): Response
-    {
-        $userActions = $userActionRepository->findBy([], ['timestamp' => 'DESC']); 
-
-        return $this->render('article/user_actions.html.twig', [
-            'userActions' => $userActions,
-        ]);
-    }
-
-
-
     /*
     * ADMIN or AUTHOR can add articles.
     */
