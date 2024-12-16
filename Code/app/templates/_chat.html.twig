@@ -1,0 +1,64 @@
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/chat.css') }}">
+{% endblock %}
+
+{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_REDAKTOR') or is_granted('ROLE_REVIEWER') %}
+    <div id="chat-icon" class="chat-icon">
+        <i class="fa fa-comment"></i>
+    </div>
+
+    <div id="chat-popup" class="chat-popup">
+        <div class="chat-header">
+            <h5>Chat: Redaktoři a Recenzenti</h5>
+        </div>
+        <div id="chat-messages" class="chat-messages"></div>
+        <textarea id="chat-input" placeholder="Napište zprávu..."></textarea>
+        <button id="chat-send">Odeslat zprávu</button>
+    </div>
+
+    <script>
+    document.getElementById('chat-icon').addEventListener('click', function() {
+        const chatPopup = document.getElementById('chat-popup');
+        if (chatPopup.style.right === '0px') {
+            chatPopup.style.right = '-350px';  
+        } else {
+            chatPopup.style.right = '0px'; 
+        }
+    });
+
+    document.getElementById('chat-send').addEventListener('click', async () => {
+        const input = document.getElementById('chat-input');
+        const content = input.value;
+
+        if (content.trim() === '') return;
+
+        const response = await fetch('/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content }),
+        });
+
+        if (response.ok) {
+            input.value = '';
+            loadMessages();
+        }
+    });
+
+    async function loadMessages() {
+        const response = await fetch('/chat');
+        const messages = await response.json();
+
+        const messagesContainer = document.getElementById('chat-messages');
+        messagesContainer.innerHTML = ''; 
+
+        messages.forEach(message => {
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = `${message.author.username}: ${message.content}`;
+            messagesContainer.appendChild(messageDiv);
+        });
+    }
+
+    loadMessages();
+    setInterval(loadMessages, 5000);
+    </script>
+{% endif %}

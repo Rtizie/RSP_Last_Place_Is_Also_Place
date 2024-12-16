@@ -4,8 +4,10 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Entity\UserAction;
 use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
+use App\Repository\UserActionRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -42,11 +44,11 @@ class ArticleController extends AbstractController
         if (!$this->isGranted('ROLE_AUTHOR') && !$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Nemáte oprávnění přidávat články.');
         }
-
+    
         $article = new Article();
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
@@ -57,16 +59,19 @@ class ArticleController extends AbstractController
                 );
                 $article->setImage($newFilename);
             }
-
+    
             $article->setAuthor($this->getUser()->getUsername());
             $article->setStatus('offered');
-
+    
+            $userAction = new UserAction($this->getUser()->getUsername(), 'Přidal článek: ' . $article->getTitle());
+            $this->entityManager->persist($userAction);
+    
             $this->entityManager->persist($article);
             $this->entityManager->flush();
-
+    
             return $this->redirectToRoute('author_articles');
         }
-
+    
         return $this->render('article/add.html.twig', [
             'form' => $form->createView(),
         ]);
@@ -97,28 +102,31 @@ class ArticleController extends AbstractController
     public function edit(Request $request, Article $article): Response
     {
         $user = $this->getUser(); 
-
-        // Zkontrolujeme, zda je uživatel autorem článku
+    
         if ($user->getUsername() !== $article->getAuthor()) {
             throw new AccessDeniedException('Nemáte oprávnění upravovat tento článek.');
         }
-
+    
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $article->setStatus('Article was rewrited and offered');
-
-            $this->entityManager->flush(); 
-
+            $this->entityManager->flush();
+    
+            $userAction = new UserAction($this->getUser()->getUsername(), 'Upravil článek: ' . $article->getTitle());
+            $this->entityManager->persist($userAction);
+            $this->entityManager->flush();
+    
             return $this->redirectToRoute('article_list');
         }
-
+    
         return $this->render('article/edit.html.twig', [
             'form' => $form->createView(),
             'article' => $article,
         ]);
     }
+    
 
 
 
@@ -151,23 +159,33 @@ class ArticleController extends AbstractController
         if (!$this->isGranted('ROLE_REDAKTOR') && !$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Nemáte oprávnění hodnotit články.');
         }
-
+    
         $article = $articleRepository->find($id);
-
+    
         if (!$article) {
             throw $this->createNotFoundException('Článek nenalezen.');
         }
-
-        if ($request->get('action') === 'approve') {
+    
+        $action = $request->get('action');
+        
+        if ($action === 'approve') {
             $article->setStatus('approved');
-        } elseif ($request->get('action') === 'reject') {
+            $logMessage = 'Schválil článek: ' . $article->getTitle();
+        } elseif ($action === 'reject') {
             $article->setStatus('rejected');
+            $logMessage = 'Zamítl článek: ' . $article->getTitle();
+        } else {
+            return $this->redirectToRoute('offered_articles');
         }
-
+    
+        $userAction = new UserAction($this->getUser()->getUsername(), $logMessage);
+        $this->entityManager->persist($userAction);
+    
         $this->entityManager->flush();
-
+    
         return $this->redirectToRoute('offered_articles');
     }
+    
 
     /*
     * AUTHOR can view the article details (including the status of the article).
@@ -217,18 +235,23 @@ class ArticleController extends AbstractController
         if (!$this->isGranted('ROLE_REDAKTOR') && !$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Nemáte oprávnění schválit článek.');
         }
-
+    
         $article = $articleRepository->find($id);
-
+    
         if (!$article) {
             throw $this->createNotFoundException('Článek nenalezen.');
         }
-
+    
         $article->setStatus('approved');
         $this->entityManager->flush();
-
+    
+        $userAction = new UserAction($this->getUser()->getUsername(), 'Schválil článek: ' . $article->getTitle());
+        $this->entityManager->persist($userAction);
+        $this->entityManager->flush();
+    
         return $this->redirectToRoute('offered_articles');
     }
+    
 
     /*
     * REDAKTOR or ADMIN can reject an article with a reason.
@@ -239,21 +262,26 @@ class ArticleController extends AbstractController
         if (!$this->isGranted('ROLE_REDAKTOR') && !$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Nemáte oprávnění odmítnout článek.');
         }
-
+    
         $article = $articleRepository->find($id);
-
+    
         if (!$article) {
             throw $this->createNotFoundException('Článek nenalezen.');
         }
-
+    
         $reason = $request->request->get('reason');
         $article->setRejectionReason($reason);
-
+    
         $article->setStatus('rejected');
         $this->entityManager->flush();
-
+    
+        $userAction = new UserAction($this->getUser()->getUsername(), 'Zamítl článek: ' . $article->getTitle() . ' s důvodem: ' . $reason);
+        $this->entityManager->persist($userAction);
+        $this->entityManager->flush();
+    
         return $this->redirectToRoute('offered_articles');
     }
+    
 
     /*
     * Only ADMIN can delete an article.
@@ -264,18 +292,22 @@ class ArticleController extends AbstractController
         if (!$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Nemáte oprávnění mazat články.');
         }
-
+    
         $article = $articleRepository->find($id);
-
+    
         if (!$article) {
             throw $this->createNotFoundException('Článek nenalezen.');
         }
-
+    
+        $userAction = new UserAction($this->getUser()->getUsername(), 'Smazal článek: ' . $article->getTitle());
+        $this->entityManager->persist($userAction);
+    
         $this->entityManager->remove($article);
         $this->entityManager->flush();
-
+    
         return $this->redirectToRoute('article_list');
     }
+    
 
     /*
     * REDAKTOR can view article details for review purposes.

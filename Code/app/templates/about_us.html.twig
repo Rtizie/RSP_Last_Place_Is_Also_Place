@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}O nás{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <section>
+        <h1 class="text-center mb-4">O nás</h1>
+        <p class="lead text-justify">
+            <strong>Svět na dosah</strong> je odborný časopis zaměřený na aktuální témata z oblasti vědy, technologií, kultury a společnosti. 
+            Naším cílem je přinášet kvalitní a inspirativní obsah pro široké spektrum čtenářů, včetně profesionálů, studentů a zájemců o obohacení svých znalostí.
+        </p>
+        <p class="text-justify">
+            Časopis je platformou nejen pro čtenáře, ale i pro autory, kteří chtějí sdílet své odborné znalosti a nápady. Pokud máte zájem stát se součástí našeho týmu,
+            nabízíme různé příležitosti, ať už jako autor, redaktor, nebo administrátor.
+        </p>
+    </section>
+
+    <section class="mt-5">
+        <h2 class="mb-4 text-center">Často kladené otázky</h2>
+        <div class="accordion" id="faqAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="faq1-heading">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true" aria-controls="faq1">
+                        Jak se stát autorem?
+                    </button>
+                </h2>
+                <div id="faq1" class="accordion-collapse collapse show" aria-labelledby="faq1-heading">
+                    <div class="accordion-body">
+                        Staňte se autorem našeho časopisu! Stačí nám zaslat vzorek svého článku na e-mailovou adresu <strong>redakce@svetnadosah.cz</strong> nebo pomocí helpdesku přímo zde na webu.
+                        Po schválení naší redakcí můžete publikovat své odborné články, eseje nebo názory.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="faq2-heading">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">
+                        Jak se stát redaktorem?
+                    </button>
+                </h2>
+                <div id="faq2" class="accordion-collapse collapse" aria-labelledby="faq2-heading">
+                    <div class="accordion-body">
+                        Redaktorům nabízíme možnost podílet se na tvorbě obsahu, editaci článků a koordinaci s autory. 
+                        Pro přihlášení zašlete nás kontaktuje na e-mail <strong>redakce@svetnadosah.cz</strong> nebo pomocí helpdesku přímo zde na webu.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="faq3-heading">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">
+                        Jak se stát administrátorem?
+                    </button>
+                </h2>
+                <div id="faq3" class="accordion-collapse collapse" aria-labelledby="faq3-heading">
+                    <div class="accordion-body">
+                        Administrátoři mají na starosti technické zajištění chodu našeho online portálu a celkovou správu uživatel na webu. Pokud máte zkušenosti s webovými technologiemi 
+                        (Symfony, PHP, nebo podobné), napište nám na <strong>support@svetnadosah.cz</strong> nebo pomocí helpdesku přímo zde na webu..
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="faq4-heading">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="false" aria-controls="faq4">
+                        Jak to funguje?
+                    </button>
+                </h2>
+                <div id="faq4" class="accordion-collapse collapse" aria-labelledby="faq4-heading">
+                    <div class="accordion-body">
+                        Časopis funguje na principu spolupráce mezi redakcí, autory a čtenáři. Každý měsíc vydáváme nové články, které procházejí procesem editace, 
+                        schvalování a publikace. Naši čtenáři se mohou zapojit do diskusí a sdílet svůj názor prostřednictvím online platformy.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Logy uživatelských akcí{% endblock %}
+
+{% block body %}
+    <h1 class="text-center">Logy uživatelských akcí</h1>
+
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Uživatel</th>
+                <th>Akce</th>
+                <th>Čas</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for action in userActions %}
+                <tr>
+                    <td>{{ action.username }}</td>
+                    <td>{{ action.action }}</td>
+                    <td>{{ action.timestamp|date('d.m.Y H:i:s') }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3" class="text-center text-muted">Žádné logy nebyly nalezeny.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
