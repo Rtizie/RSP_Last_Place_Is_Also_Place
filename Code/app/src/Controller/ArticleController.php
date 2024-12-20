@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\RedirectResponse; 
 
 
     /*
@@ -34,6 +35,19 @@ class ArticleController extends AbstractController
     {
         $this->entityManager = $entityManager;
     }
+
+    public function archive(ArticleRepository $articleRepository, int $id): RedirectResponse
+        {
+            $article = $articleRepository->archiveArticle($id);
+
+            if ($article) {
+                $this->addFlash('success', 'Článek byl archivován.');
+            } else {
+                $this->addFlash('error', 'Článek se nepodařilo archivovat.');
+            }
+
+            return $this->redirectToRoute('article_list');
+        }
 
     /*
     * ADMIN or AUTHOR can add articles.
@@ -127,8 +141,6 @@ class ArticleController extends AbstractController
         ]);
     }
     
-
-
 
     /*
     * REDAKTOR and ADMIN can see the list of offered articles for review.
@@ -327,5 +339,56 @@ class ArticleController extends AbstractController
         return $this->render('article/redaktor_detail.html.twig', [
             'article' => $article,
         ]);
+    }
+
+    #[Route('/article/{id}/archive', name: 'article_archive', methods: ['POST'])]
+    public function archiveArticle(int $id, ArticleRepository $articleRepository): Response
+    {
+        if (!$this->isGranted('ROLE_REDAKTOR') && !$this->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException('Nemáte oprávnění archivovat článek.');
+        }
+    
+        $article = $articleRepository->find($id);
+    
+        if (!$article) {
+            throw $this->createNotFoundException('Článek nenalezen.');
+        }
+    
+        $article->setStatus('archived');
+        $this->entityManager->flush();
+    
+        $userAction = new UserAction($this->getUser()->getUsername(), 'Archivoval článek: ' . $article->getTitle());
+        $this->entityManager->persist($userAction);
+        $this->entityManager->flush();
+    
+        return $this->redirectToRoute('article_list'); 
+    }
+
+    #[Route('/archived-articles', name: 'archived_articles')]
+    public function archivedArticles(ArticleRepository $articleRepository): Response
+    {
+        if (!$this->isGranted('ROLE_REDAKTOR') && !$this->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException('Nemáte oprávnění zobrazit archivované články.');
+        }
+
+        $articles = $articleRepository->findBy(['status' => 'archived'], ['createdAt' => 'DESC']);
+
+        return $this->render('article/archived_articles.html.twig', [
+            'articles' => $articles,
+        ]);
+    }
+
+    #[Route('/article/{id}/restore', name: 'article_restore', methods: ['POST'])]
+    public function restore(Article $article, ArticleRepository $articleRepository): RedirectResponse
+    {
+        if (!$this->isGranted('ROLE_REDAKTOR') && !$this->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException('Nemáte oprávnění restarovat archivované články.');
+        }
+    
+        $article->setStatus('approved'); 
+        $this->entityManager->persist($article); 
+        $this->entityManager->flush(); 
+    
+        return $this->redirectToRoute('archived_articles');
     }
 }

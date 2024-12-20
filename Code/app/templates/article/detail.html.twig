@@ -41,6 +41,14 @@
                     <a href="{{ path('article_list') }}" class="btn btn-secondary">Zpět na seznam článků</a>
                 </div>
             {% endif %}
+
+            {% if is_granted('ROLE_REDAKTOR') or is_granted('ROLE_ADMIN') %}
+                <div class="d-flex justify-content-start mt-4">
+                    <form method="POST" action="{{ path('article_archive', { 'id': article.id }) }}">
+                        <button type="submit">Archive</button>
+                    </form>
+                </div>
+            {% endif %}
         </div>
 
         <div class="col-lg-4">

@@ -39,7 +39,6 @@ class Article
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $rejectionReason = null;
 
-
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -142,6 +141,12 @@ class Article
     public function setRejectionReason(?string $rejectionReason): self
     {
         $this->rejectionReason = $rejectionReason;
+        return $this;
+    }
+
+    public function archive(): self
+    {
+        $this->status = 'archived';
         return $this;
     }
 }
