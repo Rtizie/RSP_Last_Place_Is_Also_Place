@@ -22,14 +22,11 @@
                         <li>
                             <a href="{{ path('article_list') }}" class="text-dark text-decoration-none text-sm">Články</a>
                         </li>
-                        <li>
-                            <a href="" class="text-dark text-decoration-none text-sm">Autoři</a>
-                        </li>
-                        <li>
-                            <a href="" class="text-dark text-decoration-none text-sm">Recenzenti</a>
-                        </li>
-                        <li>
+                          <li>
                             <a href="{{ path('about_us') }}" class="text-dark text-decoration-none text-sm">O nás</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('contact') }}" class="text-dark text-decoration-none text-sm">Kontakt</a>
                         </li>
                     </ul>
                 </nav>
@@ -52,10 +49,11 @@
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="userDropdown">
                             {% if is_granted('ROLE_ADMIN') %}
-                            <li><a class="dropdown-item" href="{{ path('add-article') }}">Přidat článek</a></li>
-                            <li><a class="dropdown-item" href="{{ path('offered_articles') }}">Schválování článků</a></li>
-                            <li><a class="dropdown-item" href="{{ path('article_list') }}">Seznam článků</a></li>
-                            <li><a class="dropdown-item" href="{{ path('admin_logs') }}">Logy</a></li>
+                                <li><a class="dropdown-item" href="{{ path('add-article') }}">Přidat článek</a></li>
+                                <li><a class="dropdown-item" href="{{ path('offered_articles') }}">Schvalování článků</a></li>
+                                <li><a class="dropdown-item" href="{{ path('article_list') }}">Seznam článků</a></li>
+                                <li><a class="dropdown-item" href="{{ path('admin_logs') }}">Logy</a></li>
+                                <li><a class="dropdown-item" href="{{ path('admin_tickets') }}">Seznam ticketů</a></li>
                             {% endif %}
 
                             {% if is_granted('ROLE_AUTHOR') %}
@@ -67,6 +65,7 @@
                             <li><a class="dropdown-item" href="{{ path('offered_articles') }}">Seznam článků k schválení</a></li>
                             {% endif %}
                             
+                            <li><a class="dropdown-item" href="{{ path('user_tickets') }}">Moje tickety</a></li>
                             <li><a class="dropdown-item" href="{{ path('app_logout') }}">Odhlásit se</a></li>
                         </ul>
                     </div>
@@ -88,7 +87,6 @@
     {% endblock %}
 
     <main class="container my-5 flex-grow-1">
-        {{ include('_chat.html.twig') }}
         {% block body %}{% endblock %}
     </main>
 

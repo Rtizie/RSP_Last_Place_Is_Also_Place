@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ticket úspěšně vytvořen{% endblock %}
+
+{% block body %}
+    <h1>Ticket byl úspěšně vytvořen!</h1>
+    <p>Děkujeme, že jste nás kontaktovali. Brzy se vám ozveme.</p>
+    <a href="{{ path('contact') }}">Vytvořit nový ticket</a>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Detail ticketu{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Detail ticketu: {{ ticket.subject }}</h1>
+
+        <div class="card">
+            <div class="card-header">
+                <h5>Předmět: {{ ticket.subject }}</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Důvod:</strong> {{ ticket.reason }}</p>
+                <p><strong>Stav:</strong>
+                    {% if ticket.status == 'new' %}
+                        <span class="badge bg-primary">Nový</span>
+                    {% elseif ticket.status == 'in_progress' %}
+                        <span class="badge bg-warning">V řešení</span>
+                    {% elseif ticket.status == 'resolved' %}
+                        <span class="badge bg-success">Vyřešený</span>
+                    {% elseif ticket.status == 'waiting_for_reply' %}
+                        <span class="badge bg-info">Čeká se na odpověď</span>
+                    {% elseif ticket.status == 'closed' %}
+                        <span class="badge bg-secondary">Uzavřený</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Neznámý</span>
+                    {% endif %}
+                </p>
+                <p><strong>Vytvořeno:</strong> {{ ticket.createdAt|date('d.m.Y H:i') }}</p>
+                <p><strong>Uživatel:</strong> {{ ticket.user.username }}</p>
+            </div>
+        </div>
+
+        <h3 class="mt-4">Odpovědi na tiket</h3>
+        {% if ticket.responses is not empty %}
+            <div class="list-group">
+                {% for response in ticket.responses %}
+                    <div class="list-group-item">
+                        <strong>{{ response.user.username }}</strong>
+                        <span class="text-muted">({{ response.createdAt|date('d.m.Y H:i') }})</span>
+                        <p>{{ response.message }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Žádné odpovědi na tento tiket zatím nebyly odeslány.</p>
+        {% endif %}
+
+        <!-- Formulář pro odpověď, pokud tiket není uzavřený -->
+        {% if ticket.status != 'closed' %}
+            <h3 class="mt-4">Odpovědět na tiket</h3>
+            <form action="{{ path('user_ticket_reply', {'id': ticket.id}) }}" method="POST">
+                <div class="mb-3">
+                    <label for="replyMessage" class="form-label">Vaše odpověď</label>
+                    <textarea id="replyMessage" class="form-control" rows="4" name="replyMessage"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Odeslat odpověď</button>
+            </form>
+        {% else %}
+            <p>Tento tiket byl uzavřen a není možné na něj již odpovědět.</p>
+        {% endif %}
+
+        <a href="{{ path('user_tickets') }}" class="btn btn-secondary mt-4">Zpět na seznam ticketů</a>
+    </div>
+{% endblock %}

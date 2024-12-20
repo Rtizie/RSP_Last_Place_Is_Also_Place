@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Seznam ticketů{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Seznam ticketů</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+        
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <table class="table table-striped table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Předmět</th>
+                    <th>Důvod</th>
+                    <th>Stav</th>
+                    <th>Vytvořeno</th>
+                    <th>Uživatel</th>
+                    <th>Poslední zpráva</th> 
+                    <th>Akce</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets %}
+                    <tr>
+                        <td>{{ ticket.id }}</td>
+                        <td>{{ ticket.subject }}</td>
+                        <td>{{ ticket.reason }}</td>
+                        <td>
+                            {% if ticket.status == 'new' %}
+                                <span class="badge bg-primary">Nový</span>
+                            {% elseif ticket.status == 'in_progress' %}
+                                <span class="badge bg-warning">V řešení</span>
+                            {% elseif ticket.status == 'resolved' %}
+                                <span class="badge bg-success">Vyřešený</span>
+                            {% elseif ticket.status == 'waiting_for_reply' %}
+                                <span class="badge bg-info">Čeká se na odpověď</span>
+                            {% elseif ticket.status == 'closed' %}
+                                <span class="badge bg-secondary">Uzavřený</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Neznámý</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ ticket.createdAt|date('d.m.Y H:i') }}</td>
+                        <td>{{ ticket.user ? ticket.user.username : 'Nepřiřazen' }}</td>
+                        <td>
+                            {{ ticket.message ? ticket.message|slice(0, 50) ~ '...' : 'Žádná zpráva' }}
+                        </td>
+
+                        <td>
+                            {% if ticket.status != 'closed' %}
+                                <form action="{{ path('admin_ticket_close', {'id': ticket.id}) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm">Uzavřít tiket</button>
+                                </form>
+                            {% else %}
+                                <span class="badge bg-secondary">Uzavřený</span>
+                            {% endif %}
+                            <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#replyModal{{ ticket.id }}">Odpovědět</button>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center">Žádné tickety k zobrazení.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% for ticket in tickets %}
+        <div class="modal fade" id="replyModal{{ ticket.id }}" tabindex="-1" aria-labelledby="replyModalLabel{{ ticket.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="replyModalLabel{{ ticket.id }}">Odpovědět na tiket: {{ ticket.subject }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ path('admin_ticket_reply', {'id': ticket.id}) }}" method="POST">
+                            <div class="mb-3">
+                                <label for="replyMessage{{ ticket.id }}" class="form-label">Vaše odpověď</label>
+                                <textarea id="replyMessage{{ ticket.id }}" class="form-control" rows="4" name="replyMessage" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Odeslat odpověď</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

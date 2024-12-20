@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Moje tickety{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Moje tickety</h1>
+        
+        {% if tickets is not empty %}
+            <table class="table table-striped table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Předmět</th>
+                        <th>Důvod</th>
+                        <th>Stav</th>
+                        <th>Vytvořeno</th>
+                        <th>Akce</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticket in tickets %}
+                        <tr>
+                            <td>{{ ticket.id }}</td>
+                            <td>{{ ticket.subject }}</td>
+                            <td>{{ ticket.reason }}</td>
+                            <td>
+                                {% if ticket.status == 'new' %}
+                                    <span class="badge bg-primary">Nový</span>
+                                {% elseif ticket.status == 'in_progress' %}
+                                    <span class="badge bg-warning">V řešení</span>
+                                {% elseif ticket.status == 'resolved' %}
+                                    <span class="badge bg-success">Vyřešený</span>
+                                {% elseif ticket.status == 'waiting_for_reply' %}
+                                    <span class="badge bg-info">Čeká se na odpověď</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Neznámý</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ ticket.createdAt|date('d.m.Y H:i') }}</td>
+                            <td>
+                                <a href="{{ path('user_ticket_view', {'id': ticket.id}) }}" class="btn btn-info btn-sm">Zobrazit</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Nemáte žádné tickety.</p>
+        {% endif %}
+    </div>
+{% endblock %}
