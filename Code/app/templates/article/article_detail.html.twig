@@ -1,0 +1,39 @@
+{# templates/recenzent/article_detail.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Detail článku{% endblock %}
+
+{% block body %}
+<h1>{{ article.title }}</h1>
+<p><strong>Autor:</strong> {{ article.author }}</p>
+<p><strong>Datum vytvoření:</strong> {{ article.createdAt|date('d.m.Y H:i') }}</p>
+
+{% if article.image %}
+    <div>
+        <img src="{{ asset('uploads/images/' ~ article.image) }}" alt="{{ article.title }}" class="img-fluid mb-3">
+    </div>
+{% endif %}
+
+<p>{{ article.content }}</p>
+
+<h2>Komentář</h2>
+
+{% if existingComment %}
+    <p><strong>Váš komentář:</strong></p>
+    <blockquote>{{ existingComment.content }}</blockquote>
+{% else %}
+    {% if is_granted('ROLE_RECENZENT') %}
+        <form method="post">
+            <div class="form-group">
+                <label for="comment">Váš komentář:</label>
+                <textarea id="comment" name="comment" class="form-control" rows="5"></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">Odeslat komentář</button>
+        </form>
+    {% else %}
+        <p class="text-muted">Pouze recenzenti mohou přidávat komentáře.</p>
+    {% endif %}
+{% endif %}
+
+<a href="{{ path('recenzent_articles') }}" class="btn btn-secondary mt-3">Zpět na seznam článků</a>
+{% endblock %}

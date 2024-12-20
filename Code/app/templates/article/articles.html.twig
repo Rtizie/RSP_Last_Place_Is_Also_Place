@@ -1,0 +1,35 @@
+{# templates/recenzent/articles.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Články k recenzi{% endblock %}
+
+{% block body %}
+<h1>Články k recenzi</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Název</th>
+            <th>Autor</th>
+            <th>Datum vytvoření</th>
+            <th>Akce</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for article in articles %}
+            <tr>
+                <td>{{ article.title }}</td>
+                <td>{{ article.author }}</td>
+                <td>{{ article.createdAt|date('d.m.Y H:i') }}</td>
+                <td><a href="{{ path('recenzent_article', { id: article.id }) }}" class="btn btn-primary">Zobrazit</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Žádné články k recenzi.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+

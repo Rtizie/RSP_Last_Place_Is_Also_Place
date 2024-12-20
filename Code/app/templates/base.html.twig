@@ -56,7 +56,9 @@
                                 <li><a class="dropdown-item" href="{{ path('offered_articles') }}">Schvalování článků</a></li>
                                 <li><a class="dropdown-item" href="{{ path('article_list') }}">Seznam článků</a></li>
                                 <li><a class="dropdown-item" href="{{ path('admin_logs') }}">Logy</a></li>
+                                <li><a class="dropdown-item" href="{{ path('admin_users') }}">Uživatelé</a></li>
                                 <li><a class="dropdown-item" href="{{ path('admin_tickets') }}">Seznam ticketů</a></li>
+                                <li><a class="dropdown-item" href="{{ path('recenzent_articles') }}">Recenzování článků</a></li>
                             {% endif %}
 
                             {% if is_granted('ROLE_AUTHOR') %}
@@ -66,6 +68,11 @@
 
                             {% if is_granted('ROLE_REDAKTOR') %}
                             <li><a class="dropdown-item" href="{{ path('offered_articles') }}">Seznam článků k schválení</a></li>
+                            <li><a class="dropdown-item" href="{{ path('recenzent_articles') }}">Recenzování článků</a></li>
+                            {% endif %}
+
+                            {% if is_granted('ROLE_RECENZENT') %}
+                            <li><a class="dropdown-item" href="{{ path('recenzent_articles') }}">Recenzování článků</a></li>
                             {% endif %}
                             
                             <li><a class="dropdown-item" href="{{ path('user_tickets') }}">Moje tickety</a></li>

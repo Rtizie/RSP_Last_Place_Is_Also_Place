@@ -367,9 +367,6 @@ class ArticleController extends AbstractController
     #[Route('/archived-articles', name: 'archived_articles')]
     public function archivedArticles(ArticleRepository $articleRepository): Response
     {
-        if (!$this->isGranted('ROLE_REDAKTOR') && !$this->isGranted('ROLE_ADMIN')) {
-            throw new AccessDeniedException('Nemáte oprávnění zobrazit archivované články.');
-        }
 
         $articles = $articleRepository->findBy(['status' => 'archived'], ['createdAt' => 'DESC']);
 
