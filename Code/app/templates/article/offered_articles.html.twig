@@ -24,7 +24,7 @@
 
                         <div class="col-md-4">
                             {% if article.status == 'Article was rewrited and offered' %}
-                                <p class="text-muted mb-0"><i class="fas fa-refresh"></i> Článek byl přepsán a čeká na nové schválení</p>
+                                <p class="text-muted mb-0"><i class="fas fa-refresh"></i> Článek byl přepsán</p>
                             {% else %}
                                 <p class="text-muted mb-0"><i class="fas fa-hourglass-start"></i> Čeká na schválení</p>
                             {% endif %}
@@ -34,13 +34,13 @@
                     <div class="d-flex justify-content-end position-absolute top-0 end-0 p-2">
                         <!-- Tlačítko pro redaktora (existující) -->
                         <a href="{{ path('redaktor_article', {id: article.id}) }}" class="btn btn-primary">
-                            <i class="fas fa-eye"></i> Zobrazit
+                            <i class="fas fa-eye"></i> Článek
                         </a>
                         <!-- Nové tlačítko pro recenzenta -->
                         <a href="{{ path('recenzent_article', {id: article.id}) }}" class="btn btn-secondary ms-2">
-                            <i class="fas fa-eye"></i> Zobrazit hodnocení
-                        </a>
-                    </div>
+                            <i class="fas fa-eye"></i> Hodnocení
+></i> Zobrazit hodnocení
+        </div>
                 </div>
             </div>
         </div>

@@ -1,11 +1,12 @@
 <?php
-// src/Entity/Article.php
 
 namespace App\Entity;
 
 use App\Repository\ArticleRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
@@ -39,9 +40,13 @@ class Article
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $rejectionReason = null;
 
+    #[ORM\OneToMany(mappedBy: 'article', targetEntity: ReviewComment::class, cascade: ['persist', 'remove'])]
+    private Collection $reviewComments;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
+        $this->reviewComments = new ArrayCollection(); // Initialize the collection
     }
 
     public function getId(): ?int
@@ -148,5 +153,13 @@ class Article
     {
         $this->status = 'archived';
         return $this;
+    }
+
+    /** 
+     * @return Collection|ReviewComment[] 
+     */
+    public function getReviewComments(): Collection
+    {
+        return $this->reviewComments;
     }
 }

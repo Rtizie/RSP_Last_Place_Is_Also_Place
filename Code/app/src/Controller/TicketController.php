@@ -16,6 +16,11 @@ class TicketController extends AbstractController
     #[Route('/contact', name: 'contact')]
     public function createTicket(Request $request, EntityManagerInterface $entityManager): Response
     {
+        if (!$this->getUser()) {
+            $this->addFlash('error', 'Musíte být přihlášeni, abyste mohli vytvořit ticket.');
+            return $this->redirectToRoute('app_login'); 
+        }
+
         $ticket = new Ticket();
         $ticket->setUser($this->getUser());
 

@@ -13,8 +13,7 @@
 
     <div class="row">
         {% if articles is empty %}
-            <p>Žádné archivované články nejsou k dispozici.</p>
-        {% else %}
+            <p class="text-center">Žádné archivované články nejsou k dispozici.</p>
             {% for article in articles %}
                 <div class="col-md-12 mb-4">
                     <div class="news-card shadow-sm border-light rounded">

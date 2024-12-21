@@ -311,6 +311,12 @@ class ArticleController extends AbstractController
             throw $this->createNotFoundException('Článek nenalezen.');
         }
     
+        $comments = $article->getReviewComments();
+    
+        foreach ($comments as $comment) {
+            $this->entityManager->remove($comment);
+        }
+    
         $userAction = new UserAction($this->getUser()->getUsername(), 'Smazal článek: ' . $article->getTitle());
         $this->entityManager->persist($userAction);
     

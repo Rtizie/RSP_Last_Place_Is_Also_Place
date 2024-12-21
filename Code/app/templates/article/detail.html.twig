@@ -37,22 +37,19 @@
 
             {% if is_granted('ROLE_ADMIN') %}
                 <div class="d-flex justify-content-start mt-4">
+                    {% if is_granted('ROLE_REDAKTOR') or is_granted('ROLE_ADMIN') %}
+                        <form method="POST" action="{{ path('article_archive', { 'id': article.id }) }}">
+                            <button type="submit" class="btn btn-primary me-2">Archivovat</button>
+                        </form>
+                    {% endif %}
                     <a href="{{ path('article_delete', {'id': article.id}) }}" class="btn btn-danger me-2">Smazat</a>
                     <a href="{{ path('article_list') }}" class="btn btn-secondary">Zpět na seznam článků</a>
                 </div>
             {% endif %}
 
-            {% if is_granted('ROLE_REDAKTOR') or is_granted('ROLE_ADMIN') %}
-                <div class="d-flex justify-content-start mt-4">
-                    <form method="POST" action="{{ path('article_archive', { 'id': article.id }) }}">
-                        <button type="submit">Archive</button>
-                    </form>
-                </div>
+      </div>
             {% endif %}
-        </div>
-
-        <div class="col-lg-4">
-            <h5 class="mb-4">Další články</h5>
+          <h5 class="mb-4">Další články</h5>
             <div class="list-group">
                 {% for relatedArticle in relatedArticles %}
                     <a href="{{ path('article_detail', {'id': relatedArticle.id}) }}" class="list-group-item list-group-item-action">

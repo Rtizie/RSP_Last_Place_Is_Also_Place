@@ -5,24 +5,43 @@
     <div class="container mt-5">
         <h1 class="mb-4">Odeslání Ticketu</h1>
 
-        <!-- Zobrazení formuláře -->
-        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
-            <div class="mb-3">
-                {{ form_label(form.subject, null, {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(form.subject, {'attr': {'class': 'form-control'}}) }}
-                {{ form_errors(form.subject, {'attr': {'class': 'invalid-feedback'}}) }}
-            </div>
+        {% if is_granted('ROLE_USER') %}
+            <!-- Zobrazení formuláře pouze pro přihlášené uživatele -->
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                <div class="mb-3">
+                    {{ form_label(form.subject, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.subject, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.subject, {'attr': {'class': 'invalid-feedback'}}) }}
+                </div>
 
-            <div class="mb-3">
-                {{ form_label(form.reason, null, {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(form.reason, {'attr': {'class': 'form-control'}}) }}
-                {{ form_errors(form.reason, {'attr': {'class': 'invalid-feedback'}}) }}
-            </div>
+                <div class="mb-3">
+                    {{ form_label(form.reason, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.reason, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.reason, {'attr': {'class': 'invalid-feedback'}}) }}
+                </div>
 
-            <div class="mb-3">
-                {{ form_widget(form.submit, {'attr': {'class': 'btn btn-primary'}}) }}
-            </div>
-        {{ form_end(form) }}
+                <div class="mb-3">
+                    {{ form_widget(form.submit, {'attr': {'class': 'btn btn-primary'}}) }}
+                </div>
+            {{ form_end(form) }}
+        {% else %}
+            <form>
+                <div class="mb-3">
+                    <label class="form-label">Předmět</label>
+                    <input type="text" class="form-control" value="{{ form.subject.vars.value }}" disabled>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Důvod</label>
+                    <input type="text" class="form-control" value="{{ form.reason.vars.value }}" disabled>
+                </div>
+
+                <div class="mb-3">
+                    <button class="btn btn-secondary" disabled>Odeslat</button>
+                </div>
+            </form>
+            <p class="text-muted">Pro odeslání ticketu se musíte přihlásit.</p>
+        {% endif %}
 
         <!-- Flash message -->
         {% for message in app.flashes('success') %}
